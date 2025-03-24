@@ -1,0 +1,62 @@
+name: Test External Providers
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-external-providers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.10"
+
+      - name: Set Up Environment and Install Dependencies
+        run: |
+          uv sync
+          uv pip install -e .
+
+      - name: Clone Custom llama-stack
+        run: |
+          git clone --branch feat-658 https://github.com/cdoern/llama-stack.git
+          cd llama-stack
+          uv pip install .
+          cd ..
+
+      - name: Create provider configuration
+        run: |
+          mkdir -p /tmp/providers.d/post_training
+          cp instructlab_kft.yaml /tmp/providers.d/post_training/instructlab_kft.yaml
+
+      - name: Start Llama Stack server in background
+        run: |
+          source .venv/bin/activate
+          touch server.log
+          nohup uv run llama stack run run.yaml --image-type venv > server.log 2>&1 &
+
+      - name: Wait for Llama Stack server to be ready
+        run: |
+          echo "Waiting for Llama Stack server..."
+          for i in {1..30}; do
+            if curl -s http://localhost:8321/v1/health | grep -q "OK"; then
+              echo "Llama Stack server is up!"
+              if grep -q "remote::instructlab_kft from /tmp/providers.d/post_training/instructlab_kft.yaml" server.log; then
+                echo "Llama Stack server is using custom KFT provider"
+                exit 0
+              else
+                echo "Llama Stack server is not using InstructLab KFT provider"
+                exit 1
+              fi
+            fi
+            sleep 1
+          done
+          echo "Llama Stack server failed to start"
+          cat server.log
+          exit 1
