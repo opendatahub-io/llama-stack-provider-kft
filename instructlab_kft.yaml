@@ -1,0 +1,7 @@
+adapter:
+  adapter_type: instructlab_kft
+  pip_packages: ["kubeflow", "kubeflow-training"]
+  config_class: llama_stack_provider_kft.config.InstructLabKubeFlowPostTrainingConfig
+  module: llama_stack_provider_kft
+api_dependencies: []
+optional_api_dependencies: []

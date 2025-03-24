@@ -1,0 +1,24 @@
+version: '2'
+image_name: instructlab-kft
+apis:
+- post_training
+providers:
+  post_training:
+  - provider_id: instructlab_kft
+    provider_type: remote::instructlab_kft
+    config:
+      model_path: "/model"
+      data_path: "/data"
+      gpu_identifier: "A100"
+      cpu_per_worker: "100m"
+      memory_per_worker: "100m"
+      tolerations: []
+      node_selectors: {}
+      pytorchjob_output_yaml: ""
+      model_pvc_name: models
+      input_pvc_name: input
+      output_pvc_name: output
+      name_suffix: ilab
+      phase_num: 1
+      base_image: rhelai-bootc
+external_providers_dir: /tmp/providers.d

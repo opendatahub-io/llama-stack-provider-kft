@@ -1,0 +1,27 @@
+[project]
+dependencies = [
+    "llama-stack",
+    "kubeflow",
+    "kubeflow-training",
+    "kubernetes",
+    "urllib3",
+    "six",
+    "pydantic",
+    "aiohttp",
+    "aiosqlite",
+    "datasets",
+    "fastapi",
+    "httpx",
+    "numpy",
+    "openai",
+    "opentelemetry-exporter-otlp-proto-http",
+    "opentelemetry-sdk",
+    "requests",
+    "uvicorn",
+]
+
+name = "llama-stack-provider-kft"
+version = "0.1.0"
+description = "Llama Stack Provider for Distributed InstructLab Training using KFT"
+readme = "README.md"
+requires-python = ">=3.10"
