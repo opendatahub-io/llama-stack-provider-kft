@@ -41,7 +41,7 @@ jobs:
             if curl -s http://localhost:8321/v1/health | grep -q "OK"; then
               echo "Llama Stack server is up!"
               if grep -q "remote::instructlab_kft from /tmp/providers.d/post_training/instructlab_kft.yaml" server.log; then
-                echo "Llama Stack server is using custom KFT provider"
+                echo "Llama Stack server is using InstructLab KFT provider"
                 exit 0
               else
                 echo "Llama Stack server is not using InstructLab KFT provider"
@@ -53,3 +53,12 @@ jobs:
           echo "Llama Stack server failed to start"
           cat server.log
           exit 1
+
+      - name: Upload logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: logs
+          retention-days: 5
+          path: |
+            **/*.log
