@@ -7,8 +7,8 @@ providers:
   - provider_id: instructlab_kft
     provider_type: remote::instructlab_kft
     config:
-      model_path: "/model"
-      data_path: "/data"
+      model_path: "/input_model/*"
+      data_path: "/input_data/*"
       gpu_identifier: "nvidia.com/gpu"
       cpu_per_worker: "1"
       memory_per_worker: "32Gi"
@@ -16,7 +16,7 @@ providers:
       node_selectors: {}
       pytorchjob_output_yaml: ""
       model_pvc_name: models
-      input_pvc_name: input
+      input_pvc_name: data
       output_pvc_name: output
       name_suffix: ilab
       phase_num: 1
