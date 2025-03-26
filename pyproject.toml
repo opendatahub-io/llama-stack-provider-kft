@@ -1,6 +1,6 @@
 [project]
 dependencies = [
-    "llama-stack",
+    "llama-stack @ git+https://github.com/cdoern/llama-stack.git@feat-658",
     "kubeflow",
     "kubeflow-training",
     "kubernetes",
