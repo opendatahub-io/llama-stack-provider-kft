@@ -23,13 +23,6 @@ jobs:
           uv sync
           uv pip install -e .
 
-      - name: Clone Custom llama-stack
-        run: |
-          git clone --branch feat-658 https://github.com/cdoern/llama-stack.git
-          cd llama-stack
-          uv pip install .
-          cd ..
-
       - name: Create provider configuration
         run: |
           mkdir -p /tmp/providers.d/post_training

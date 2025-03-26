@@ -727,7 +727,7 @@ wheels = [
 [[package]]
 name = "llama-stack"
 version = "0.1.8"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/cdoern/llama-stack.git?rev=feat-658#3c03acb14a2b09e78d76044bc8d48aad62165f9f" }
 dependencies = [
     { name = "blobfile" },
     { name = "fire" },
@@ -745,10 +745,6 @@ dependencies = [
     { name = "setuptools" },
     { name = "termcolor" },
     { name = "tiktoken" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/94/65/346b62d54e97cdaf9723a2e573fed71304aa9876d5230a96179c4f41fb5a/llama_stack-0.1.8.tar.gz", hash = "sha256:5f8022f4ae31dc1c66ebbfef1ca53940ba1bfc7652a2f088a4e400a0e52ee2cc", size = 1502833 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/57/e6/db79ebdab6297689d897abee6903ffe96b373f320d5b9545308f06f85d1f/llama_stack-0.1.8-py3-none-any.whl", hash = "sha256:17657187f5a4ba765d091f0b8d5f8406846411ad1c74f8c5f134d633a40b8450", size = 1841993 },
 ]
 
 [[package]]
@@ -810,7 +806,7 @@ requires-dist = [
     { name = "kubeflow" },
     { name = "kubeflow-training" },
     { name = "kubernetes" },
-    { name = "llama-stack" },
+    { name = "llama-stack", git = "https://github.com/cdoern/llama-stack.git?rev=feat-658" },
     { name = "numpy" },
     { name = "openai" },
     { name = "opentelemetry-exporter-otlp-proto-http" },
