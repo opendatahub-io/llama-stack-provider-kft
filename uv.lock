@@ -727,7 +727,7 @@ wheels = [
 [[package]]
 name = "llama-stack"
 version = "0.1.8"
-source = { git = "https://github.com/cdoern/llama-stack.git?rev=feat-658#3c03acb14a2b09e78d76044bc8d48aad62165f9f" }
+source = { git = "https://github.com/astefanutti/llama-stack.git?rev=feat-658-1238#047a75f0846c34edf01acc5c5330af1db3687585" }
 dependencies = [
     { name = "blobfile" },
     { name = "fire" },
@@ -806,7 +806,7 @@ requires-dist = [
     { name = "kubeflow" },
     { name = "kubeflow-training" },
     { name = "kubernetes" },
-    { name = "llama-stack", git = "https://github.com/cdoern/llama-stack.git?rev=feat-658" },
+    { name = "llama-stack", git = "https://github.com/astefanutti/llama-stack.git?rev=feat-658-1238" },
     { name = "numpy" },
     { name = "openai" },
     { name = "opentelemetry-exporter-otlp-proto-http" },

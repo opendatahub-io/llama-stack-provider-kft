@@ -23,16 +23,11 @@ jobs:
           uv sync
           uv pip install -e .
 
-      - name: Create provider configuration
-        run: |
-          mkdir -p /tmp/providers.d/post_training
-          cp instructlab_kft.yaml /tmp/providers.d/post_training/instructlab_kft.yaml
-
       - name: Start Llama Stack server in background
         run: |
           source .venv/bin/activate
           touch server.log
-          nohup uv run llama stack run run.yaml --image-type venv > server.log 2>&1 &
+          LLAMA_STACK_LOG_FILE=server.log nohup uv run llama stack run run.yaml --image-type venv &
 
       - name: Wait for Llama Stack server to be ready
         run: |
@@ -40,7 +35,7 @@ jobs:
           for i in {1..30}; do
             if curl -s http://localhost:8321/v1/health | grep -q "OK"; then
               echo "Llama Stack server is up!"
-              if grep -q "remote::instructlab_kft from /tmp/providers.d/post_training/instructlab_kft.yaml" server.log; then
+              if grep -q -e "remote::instructlab_kft from .*providers.d/remote/post_training/instructlab_kft.yaml" server.log; then
                 echo "Llama Stack server is using InstructLab KFT provider"
                 exit 0
               else

@@ -21,4 +21,4 @@ providers:
       name_suffix: ilab
       phase_num: 1
       base_image: rhelai-bootc
-external_providers_dir: /tmp/providers.d
+external_providers_dir: ./providers.d
