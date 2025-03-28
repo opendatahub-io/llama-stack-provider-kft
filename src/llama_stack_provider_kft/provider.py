@@ -5,7 +5,7 @@ def get_provider_spec() -> ProviderSpec:
         api=Api.post_training,
         adapter=AdapterSpec(
             adapter_type="instructlab_kft",
-            pip_packages=["kubeflow-training"],
+            pip_packages=["kubeflow-training==1.9.1"],
             config_class="config.InstructLabKubeFlowPostTrainingConfig",
             module="kft_adapter",
         ),

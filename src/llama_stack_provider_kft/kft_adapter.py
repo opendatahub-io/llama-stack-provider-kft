@@ -129,12 +129,11 @@ class InstructLabKubeFlowPostTrainingImpl:
                     --data_path={path_to_data} \
                     --output_dir=/tmp/model \
                     --num_epochs={training_config.n_epochs} \
-                    --effective_batch_size={training_config.effective_batch_size} \
-                    --learning_rate={training_config.learning_rate} \
-                    --num_warmup_steps={self.config.num_warmup_steps} \
-                    --save_samples={self.config.save_samples} \
+                    --effective_batch_size={training_config.data_config.batch_size} \
+                    --learning_rate={training_config.optimizer_config.lr} \
+                    --num_warmup_steps={training_config.optimizer_config.num_warmup_steps} \
                     --log_level=INFO \
-                    --max_batch_len={training_config.max_batch_len} \
+                    --save_samples={self.config.save_samples} \
                     --seed={self.config.seed} \
                     --cpu_offload_optimizer \
                     --cpu_offload_params_fsdp \
@@ -223,14 +222,11 @@ class InstructLabKubeFlowPostTrainingImpl:
                 job_template = kfto_utils.get_pytorchjob_template(
                     name=name,
                     namespace=namespace,
-                #    worker_pod_template_spec=worker_pod_template_spec,
+                    worker_pod_template_spec=master_pod_template_spec,
                     master_pod_template_spec=master_pod_template_spec,
                     num_workers=self.config.nnodes,
                     num_procs_per_worker=self.config.nproc_per_node,
                 )
-                # Save the pytorch job yaml for record keeping and debugging
-                with open(self.config.pytorchjob_output_yaml, "w", encoding="utf-8") as f:
-                    f.write(job_template.to_str())
 
                 # Run the pytorch job
                 logger.info(f"Creating PyTorchJob in namespace: {namespace}")
