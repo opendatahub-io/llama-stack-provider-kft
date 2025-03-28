@@ -9,9 +9,9 @@ providers:
     config:
       model_path: "/model"
       data_path: "/data"
-      gpu_identifier: "A100"
-      cpu_per_worker: "100m"
-      memory_per_worker: "100m"
+      gpu_identifier: "nvidia.com/gpu"
+      cpu_per_worker: "1"
+      memory_per_worker: "32Gi"
       tolerations: []
       node_selectors: {}
       pytorchjob_output_yaml: ""
