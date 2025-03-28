@@ -11,16 +11,16 @@ from pydantic import BaseModel
 
 class InstructLabKubeFlowPostTrainingConfig(BaseModel):
     model_path: str = "/model"
-    data_path: str
-    gpu_identifier: str
-    cpu_per_worker: str
-    memory_per_worker: str
+    data_path: str = "/data"
+    gpu_identifier: str = "nvidia.com/gpu"
+    cpu_per_worker: str = "1"
+    memory_per_worker: str = "32Gi"
     tolerations: list
     node_selectors: dict
     pytorchjob_output_yaml: str
-    model_pvc_name: str
-    input_pvc_name: str
-    output_pvc_name: str
+    model_pvc_name: str = "model"
+    input_pvc_name: str = "data"
+    output_pvc_name: str = "output"
     name_suffix: str
     phase_num: int
     base_image: str
