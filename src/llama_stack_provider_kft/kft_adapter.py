@@ -276,11 +276,29 @@ class InstructLabKubeFlowPostTrainingImpl:
     async def get_training_job_status(self, job_uuid: str) -> Optional[PostTrainingJobStatusResponse]:
         job = self._scheduler.get_job(job_uuid)
 
+
+        match job.status:
+             # TODO: Add support for other statuses to API
+             case SchedulerJobStatus.new | SchedulerJobStatus.scheduled:
+                 status = SchedulerJobStatus.scheduled
+             case SchedulerJobStatus.running:
+                 status = SchedulerJobStatus.in_progress
+             case SchedulerJobStatus.completed:
+                 status = SchedulerJobStatus.completed
+             case SchedulerJobStatus.failed:
+                 status = SchedulerJobStatus.failed
+             case _:
+                 raise NotImplementedError()
+ 
         return PostTrainingJobStatusResponse(
-            job_uuid=job_uuid,
-            status=job.status,
-            scheduled_at=job.scheduled_at,
-        )
+             job_uuid=job_uuid,
+             status=status,
+             scheduled_at=job.scheduled_at,
+             started_at=job.started_at,
+             completed_at=job.completed_at,
+             checkpoints=self._get_checkpoints(job),
+             resources_allocated=self._get_resources_allocated(job),
+         )
 
     async def cancel_training_job(self, job_uuid: str) -> None:
         raise NotImplementedError("Job cancel is not implemented yet")
