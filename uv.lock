@@ -669,23 +669,6 @@ wheels = [
 ]
 
 [[package]]
-name = "kubeflow"
-version = "0.0.1rc0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "certifi" },
-    { name = "kubernetes" },
-    { name = "retrying" },
-    { name = "setuptools" },
-    { name = "six" },
-    { name = "urllib3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/8d/00/ed417c8c043dedcea93fc8c67d4676b2d7225a90384501584a8b1521f403/kubeflow-0.0.1rc0.tar.gz", hash = "sha256:9b67286e10e738ca6c8fca48266bbe8c7a5dbf8c4524fa65678d61b2835e03c1", size = 52351 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/69/f2/6d7b050d16a39481374a8a7b64aa52220913d30875e5bbcca2dd33c73dbd/kubeflow-0.0.1rc0-py3-none-any.whl", hash = "sha256:be323070c1f27e957910f4d676cb5cf22784fdbdf09417997ef31f87b27ea650", size = 122421 },
-]
-
-[[package]]
 name = "kubeflow-training"
 version = "1.9.1"
 source = { registry = "https://pypi.org/simple" }
@@ -781,7 +764,6 @@ dependencies = [
     { name = "datasets" },
     { name = "fastapi" },
     { name = "httpx" },
-    { name = "kubeflow" },
     { name = "kubeflow-training" },
     { name = "kubernetes" },
     { name = "llama-stack" },
@@ -803,8 +785,7 @@ requires-dist = [
     { name = "datasets" },
     { name = "fastapi" },
     { name = "httpx" },
-    { name = "kubeflow" },
-    { name = "kubeflow-training" },
+    { name = "kubeflow-training", specifier = "==1.9.1" },
     { name = "kubernetes" },
     { name = "llama-stack", git = "https://github.com/astefanutti/llama-stack.git?rev=feat-658-1238" },
     { name = "numpy" },
