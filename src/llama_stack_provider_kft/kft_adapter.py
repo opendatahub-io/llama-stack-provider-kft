@@ -227,9 +227,6 @@ class InstructLabKubeFlowPostTrainingImpl:
                     num_workers=self.config.nnodes,
                     num_procs_per_worker=self.config.nproc_per_node,
                 )
-                # Save the pytorch job yaml for record keeping and debugging
-                with open(self.config.pytorchjob_output_yaml, "w", encoding="utf-8") as f:
-                    f.write(job_template.to_str())
 
                 # Run the pytorch job
                 logger.info(f"Creating PyTorchJob in namespace: {namespace}")
