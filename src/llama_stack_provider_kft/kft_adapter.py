@@ -18,6 +18,7 @@ from llama_stack.apis.post_training import (
     PostTrainingJobArtifactsResponse,
     PostTrainingJobStatusResponse,
     TrainingConfig,
+    JobStatus,
 )
 from .config import (
     InstructLabKubeFlowPostTrainingConfig,
@@ -280,13 +281,13 @@ class InstructLabKubeFlowPostTrainingImpl:
         match job.status:
              # TODO: Add support for other statuses to API
              case SchedulerJobStatus.new | SchedulerJobStatus.scheduled:
-                 status = SchedulerJobStatus.scheduled
+                 status = JobStatus.scheduled
              case SchedulerJobStatus.running:
-                 status = SchedulerJobStatus.in_progress
+                 status = JobStatus.in_progress
              case SchedulerJobStatus.completed:
-                 status = SchedulerJobStatus.completed
+                 status = JobStatus.completed
              case SchedulerJobStatus.failed:
-                 status = SchedulerJobStatus.failed
+                 status = JobStatus.failed
              case _:
                  raise NotImplementedError()
  
@@ -296,8 +297,7 @@ class InstructLabKubeFlowPostTrainingImpl:
              scheduled_at=job.scheduled_at,
              started_at=job.started_at,
              completed_at=job.completed_at,
-             checkpoints=self._get_checkpoints(job),
-             resources_allocated=self._get_resources_allocated(job),
+             checkpoints=[],
          )
 
     async def cancel_training_job(self, job_uuid: str) -> None:
