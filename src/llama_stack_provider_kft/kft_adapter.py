@@ -231,7 +231,11 @@ class InstructLabKubeFlowPostTrainingImpl:
 
                 # Run the pytorch job
                 logger.info(f"Creating PyTorchJob in namespace: {namespace}")
-                training_client.create_job(job_template, namespace=namespace)
+                try:
+                    training_client.create_job(job_template, namespace=namespace)
+                except Exception as exc:
+                    logger.error(f"Failed to create PyTorchJob {str(exc)}")
+                    raise
 
                 expected_conditions = ["Succeeded", "Failed"]
                 logger.info(f"Monitoring job until status is any of {expected_conditions}.")
