@@ -24,3 +24,6 @@ version = "0.1.0"
 description = "Llama Stack Provider for Distributed InstructLab Training using KFT"
 readme = "README.md"
 requires-python = ">=3.10"
+
+[tool.ruff]
+extend-exclude = ["*.ipynb"]
