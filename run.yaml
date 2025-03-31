@@ -20,5 +20,5 @@ providers:
       output_pvc_name: output
       name_suffix: ilab
       phase_num: 1
-      base_image: rhelai-bootc
+      base_image: registry.redhat.io/rhelai1/instructlab-nvidia-rhel9
 external_providers_dir: ./providers.d
