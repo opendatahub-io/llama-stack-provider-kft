@@ -82,6 +82,7 @@ class InstructLabKubeFlowPostTrainingImpl:
             # seed: int = self.config.seed,
             # job_timeout: int = 86400,
             # delete_after_done: bool = False,
+            # keep_last_checkpoint_only: bool = False,
         ):
             from kubeflow.training import TrainingClient, models
             from kubeflow.training.constants.constants import ISTIO_SIDECAR_INJECTION
@@ -105,6 +106,12 @@ class InstructLabKubeFlowPostTrainingImpl:
             name = f"train-phase{self.config.phase_num}-{self.config.name_suffix.rstrip('-sdg')}"
             command = ["/bin/sh", "-c", "--"]
 
+            # This feels like a hack, we can probably do this better
+            keep_last_checkpoint = (
+                "--keep_last_checkpoint_only"
+                if self.config.keep_last_checkpoint_only
+                else ""
+            )
             master_args = [
                 f"""
                     echo "Running Training Phase"
@@ -129,8 +136,9 @@ class InstructLabKubeFlowPostTrainingImpl:
                     --cpu_offload_optimizer \
                     --cpu_offload_params_fsdp \
                     --distributed_training_framework fsdp \
-                    --checkpoint_at_epoch
+                    --checkpoint_at_epoch {keep_last_checkpoint}
                     """
+                # space between --checkpoint_at_epoch and {keep_last_checkpoint} is intentional DO NOT REMOVE
             ]
 
             # Set volumes
