@@ -1,4 +1,10 @@
-from llama_stack.providers.datatypes import ProviderSpec, Api, AdapterSpec, remote_provider_spec
+from llama_stack.providers.datatypes import (
+    ProviderSpec,
+    Api,
+    AdapterSpec,
+    remote_provider_spec,
+)
+
 
 def get_provider_spec() -> ProviderSpec:
     return remote_provider_spec(
