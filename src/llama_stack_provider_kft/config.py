@@ -25,6 +25,7 @@ class InstructLabKubeFlowPostTrainingConfig(BaseModel):
     job_timeout: int = 86400
     nnodes: int = 2
     delete_after_done: bool = False
+    keep_last_checkpoint_only: bool = False
 
     @classmethod
     def sample_run_config(cls, **kwargs) -> Dict[str, Any]:
