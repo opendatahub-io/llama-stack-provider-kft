@@ -21,4 +21,5 @@ providers:
       name_suffix: ilab
       phase_num: 1
       base_image: registry.redhat.io/rhelai1/instructlab-nvidia-rhel9
+      preprocess: True
 external_providers_dir: ./providers.d

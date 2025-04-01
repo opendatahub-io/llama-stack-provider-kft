@@ -1,13 +1,14 @@
 from typing import Any, Dict, Optional
+import os
 
 from llama_stack.apis.post_training import (
     AlgorithmConfig,
     DPOAlignmentConfig,
     ListPostTrainingJobsResponse,
-    LoraFinetuningConfig,
     PostTrainingJob,
     PostTrainingJobArtifactsResponse,
     PostTrainingJobStatusResponse,
+    LoraFinetuningConfig,
     TrainingConfig,
     JobStatus,
 )
@@ -17,6 +18,9 @@ from .config import (
 from llama_stack.log import get_logger
 from llama_stack.providers.utils.scheduler import Scheduler
 from llama_stack.providers.utils.scheduler import JobStatus as SchedulerJobStatus
+from kubeflow.training import TrainingClient, models
+from kubeflow.training.constants.constants import ISTIO_SIDECAR_INJECTION
+from kubeflow.training.utils import utils as kfto_utils
 
 _JOB_TYPE_SUPERVISED_FINE_TUNE = "supervised-fine-tune"
 
@@ -84,16 +88,50 @@ class InstructLabKubeFlowPostTrainingImpl:
             # delete_after_done: bool = False,
             # keep_last_checkpoint_only: bool = False,
         ):
-            from kubeflow.training import TrainingClient, models
-            from kubeflow.training.constants.constants import ISTIO_SIDECAR_INJECTION
-            from kubeflow.training.utils import utils as kfto_utils
+            # Set volumes
+            volumes = [
+                models.V1Volume(
+                    name="input-data",
+                    persistent_volume_claim=models.V1PersistentVolumeClaimVolumeSource(
+                        claim_name=self.config.input_pvc_name
+                    ),
+                ),
+                models.V1Volume(
+                    name="model",
+                    persistent_volume_claim=models.V1PersistentVolumeClaimVolumeSource(
+                        claim_name=self.config.model_pvc_name
+                    ),
+                ),
+                models.V1Volume(
+                    name="output",
+                    persistent_volume_claim=models.V1PersistentVolumeClaimVolumeSource(
+                        claim_name=self.config.output_pvc_name
+                    ),
+                ),
+            ]
 
-            on_log_message_cb("Starting InstructLab finetuning")
+            # Set volume mounts
+            volume_mounts_master = [
+                models.V1VolumeMount(
+                    mount_path="/input_data", name="input-data", read_only=True
+                ),
+                models.V1VolumeMount(
+                    mount_path="/input_model", name="model", read_only=True
+                ),
+                models.V1VolumeMount(mount_path="/output", name="output"),
+            ]
 
-            path_to_model = self.config.model_path  # "/input_model"
-            path_to_data = self.config.data_path  # "/input_data/knowledge/data.jsonl"
-            # path_to_model = list_phase1_final_model()
-            # path_to_data = "/input_data/skills/data.jsonl"
+            # Set env variables
+            env_vars = [
+                models.V1EnvVar(name="NNODES", value=f"{self.config.nnodes}"),
+                models.V1EnvVar(
+                    name="NPROC_PER_NODE", value=f"{self.config.nproc_per_node}"
+                ),
+                models.V1EnvVar(name="XDG_CACHE_HOME", value="/tmp"),
+                models.V1EnvVar(name="TRITON_CACHE_DIR", value="/tmp"),
+                models.V1EnvVar(name="HF_HOME", value="/tmp"),
+                models.V1EnvVar(name="TRANSFORMERS_CACHE", value="/tmp"),
+            ]
 
             if self.config.gpu_identifier == "":
                 raise RuntimeError("GPU identifier cannot be empty")
@@ -102,6 +140,24 @@ class InstructLabKubeFlowPostTrainingImpl:
                 "memory": self.config.memory_per_worker,
                 self.config.gpu_identifier: self.config.nproc_per_node,
             }
+
+            init_containers = None
+            logger.info(f"Preprocess: {self.config.preprocess}")
+            if self.config.preprocess:
+                init_containers = self.create_init_containers(
+                    resources_per_worker=resources_per_worker, env_vars=env_vars
+                )
+
+                # if we are processing data, our data path needs to be data.jsonl
+                path_to_data = os.path.join(
+                    os.path.dirname(self.config.data_path), "data.jsonl"
+                )
+            else:
+                path_to_data = self.config.data_path
+
+            on_log_message_cb("Starting InstructLab finetuning")
+
+            path_to_model = self.config.model_path
 
             name = f"train-phase{self.config.phase_num}-{self.config.name_suffix.rstrip('-sdg')}"
             command = ["/bin/sh", "-c", "--"]
@@ -141,50 +197,6 @@ class InstructLabKubeFlowPostTrainingImpl:
                 # space between --checkpoint_at_epoch and {keep_last_checkpoint} is intentional DO NOT REMOVE
             ]
 
-            # Set volumes
-            volumes = [
-                models.V1Volume(
-                    name="input-data",
-                    persistent_volume_claim=models.V1PersistentVolumeClaimVolumeSource(
-                        claim_name=self.config.input_pvc_name
-                    ),
-                ),
-                models.V1Volume(
-                    name="model",
-                    persistent_volume_claim=models.V1PersistentVolumeClaimVolumeSource(
-                        claim_name=self.config.model_pvc_name
-                    ),
-                ),
-                models.V1Volume(
-                    name="output",
-                    persistent_volume_claim=models.V1PersistentVolumeClaimVolumeSource(
-                        claim_name=self.config.output_pvc_name
-                    ),
-                ),
-            ]
-
-            # Set volume mounts
-            volume_mounts_master = [
-                models.V1VolumeMount(
-                    mount_path="/input_data", name="input-data", read_only=True
-                ),
-                models.V1VolumeMount(
-                    mount_path="/input_model", name="model", read_only=True
-                ),
-                models.V1VolumeMount(mount_path="/output", name="output"),
-            ]
-            # Set env variables
-            env_vars = [
-                models.V1EnvVar(name="NNODES", value=f"{self.config.nnodes}"),
-                models.V1EnvVar(
-                    name="NPROC_PER_NODE", value=f"{self.config.nproc_per_node}"
-                ),
-                models.V1EnvVar(name="XDG_CACHE_HOME", value="/tmp"),
-                models.V1EnvVar(name="TRITON_CACHE_DIR", value="/tmp"),
-                models.V1EnvVar(name="HF_HOME", value="/tmp"),
-                models.V1EnvVar(name="TRANSFORMERS_CACHE", value="/tmp"),
-            ]
-
             # Get container spec
             master_container_spec = kfto_utils.get_container_spec(
                 base_image=self.config.base_image,
@@ -199,14 +211,13 @@ class InstructLabKubeFlowPostTrainingImpl:
             master_container_spec.command = command
             master_container_spec.args = master_args
             master_container_spec.env = env_vars
-
             # create master pod spec
             master_pod_template_spec = models.V1PodTemplateSpec(
                 metadata=models.V1ObjectMeta(
                     annotations={ISTIO_SIDECAR_INJECTION: "false"}
                 ),
                 spec=models.V1PodSpec(
-                    init_containers=None,
+                    init_containers=init_containers,
                     containers=[master_container_spec],
                     volumes=volumes,
                     tolerations=self.config.tolerations,
@@ -323,6 +334,61 @@ class InstructLabKubeFlowPostTrainingImpl:
                 job_uuid=job_uuid, checkpoints=checkpoints
             )
         return None
+
+    def create_init_containers(
+        self, resources_per_worker, env_vars
+    ) -> list[models.V1Container]:
+        dp_master_args = [
+            f"""
+            echo "Processing data"
+            echo "Using "{self.config.model_path}" model for training"
+            echo "Using "{self.config.data_path}"  data for training"
+
+            pip install instructlab-training==0.7.0
+
+            ls /input_model
+            ls /input_data
+
+            python -c 'import importlib.resources as pkg_resources
+import instructlab.training.chat_templates as chat_templates
+import instructlab.training.data_process as dp
+from instructlab.training import DataProcessArgs, TrainingArgs
+
+chat_tmpl_path = None
+print("{self.config.chat_tmpl_path}")
+if {self.config.chat_tmpl_path} == None:
+    chat_tmpl_path = str(pkg_resources.files(chat_templates) / "ibm_generic_tmpl.py")
+else:
+    chat_tmpl_path = "{self.config.chat_tmpl_path}"
+dp.main(
+    DataProcessArgs(
+        data_output_path="{os.path.dirname(self.config.data_path)}",
+        model_path="{self.config.model_path}",
+        data_path="{self.config.data_path}",
+        max_seq_len="{self.config.max_seq_len}",
+        chat_tmpl_path=chat_tmpl_path,
+    )
+)'
+        """
+        ]
+        init_container = kfto_utils.get_container_spec(
+            base_image=self.config.base_image,
+            name="data-loader",
+            resources=resources_per_worker,
+            volume_mounts=[
+                models.V1VolumeMount(mount_path="/input_data", name="input-data"),
+                models.V1VolumeMount(
+                    mount_path="/input_model", name="model", read_only=True
+                ),
+            ],
+        )
+        init_container.args = dp_master_args
+        init_container.env = env_vars
+        init_container.command = ["/bin/sh", "-c", "--"]
+        init_containers = [init_container]
+
+        logger.info(f"Init containers {init_containers}")
+        return init_containers
 
 
 async def get_adapter_impl(config: InstructLabKubeFlowPostTrainingConfig, _deps):

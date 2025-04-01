@@ -26,6 +26,9 @@ class InstructLabKubeFlowPostTrainingConfig(BaseModel):
     nnodes: int = 2
     delete_after_done: bool = False
     keep_last_checkpoint_only: bool = False
+    preprocess: bool = False
+    chat_tmpl_path: str = None
+    max_seq_len: int = 4096
 
     @classmethod
     def sample_run_config(cls, **kwargs) -> Dict[str, Any]:
