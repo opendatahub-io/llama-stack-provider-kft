@@ -232,6 +232,8 @@ class InstructLabKubeFlowPostTrainingImpl:
             # This also finds the namespace from /var/run/secrets/kubernetes.io/serviceaccount/namespace
             # And it also loads the kube config
             training_client = TrainingClient()
+            logger.info(f"Using Namespace: {training_client.namespace}")
+
             namespace = training_client.namespace
             # Create pytorch job spec
             job_template = kfto_utils.get_pytorchjob_template(
