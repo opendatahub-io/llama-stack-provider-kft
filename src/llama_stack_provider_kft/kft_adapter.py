@@ -54,8 +54,6 @@ class InstructLabKubeFlowPostTrainingImpl:
         checkpoint_dir: Optional[str],
         algorithm_config: Optional[AlgorithmConfig],
     ) -> PostTrainingJob:
-        if isinstance(algorithm_config, LoraFinetuningConfig):
-            raise NotImplementedError()
 
         post_training_job = PostTrainingJob(job_uuid=job_uuid)
 
