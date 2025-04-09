@@ -8,7 +8,6 @@ from llama_stack.apis.post_training import (
     PostTrainingJob,
     PostTrainingJobArtifactsResponse,
     PostTrainingJobStatusResponse,
-    LoraFinetuningConfig,
     TrainingConfig,
     JobStatus,
 )
@@ -54,9 +53,6 @@ class InstructLabKubeFlowPostTrainingImpl:
         checkpoint_dir: Optional[str],
         algorithm_config: Optional[AlgorithmConfig],
     ) -> PostTrainingJob:
-        if isinstance(algorithm_config, LoraFinetuningConfig):
-            raise NotImplementedError()
-
         post_training_job = PostTrainingJob(job_uuid=job_uuid)
 
         async def handler(
@@ -232,6 +228,8 @@ class InstructLabKubeFlowPostTrainingImpl:
             # This also finds the namespace from /var/run/secrets/kubernetes.io/serviceaccount/namespace
             # And it also loads the kube config
             training_client = TrainingClient()
+            logger.info(f"Using Namespace: {training_client.namespace}")
+
             namespace = training_client.namespace
             # Create pytorch job spec
             job_template = kfto_utils.get_pytorchjob_template(

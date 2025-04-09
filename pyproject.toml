@@ -27,3 +27,7 @@ requires-python = ">=3.10"
 
 [tool.ruff]
 extend-exclude = ["*.ipynb"]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
