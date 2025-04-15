@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lls-provider-kft
+  labels:
+    app: lls-provider-kft
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lls-provider-kft
+  template:
+    metadata:
+      labels:
+        app: lls-provider-kft
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: lls-provider-kft
+      containers:
+        - name: lls-provider-kft
+          image: quay.io/efazal/kfto-remote-provider:amd64
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8321
+              name: http
+              protocol: TCP

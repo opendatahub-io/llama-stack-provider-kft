@@ -1,0 +1,15 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: lls-provider-kft
+  name: lls-provider-kft
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: lls-provider-kft
+subjects:
+- kind: ServiceAccount
+  name: lls-provider-kft
+  namespace: llama-stack
