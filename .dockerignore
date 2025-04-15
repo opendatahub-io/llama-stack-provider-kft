@@ -8,3 +8,8 @@ __pycache__/
 .idea/
 .venv-llama-provider/
 build/
+src/llama_stack_provider_kft.egg-info
+manifests/
+dist/
+*.ipynb
+.pre-commit-config.yaml
