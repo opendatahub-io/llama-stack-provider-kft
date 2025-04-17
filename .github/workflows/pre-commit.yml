@@ -30,7 +30,3 @@ jobs:
       - name: Verify if there are any diff files after pre-commit
         run: |
           git diff --exit-code || (echo "There are uncommitted changes, run pre-commit locally and commit again" && exit 1)
-
-      - name: Setup tmate session
-        if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3
