@@ -1,0 +1,15 @@
+# .dockerignore
+__pycache__/
+*.pyc
+.github
+.env
+*.log
+.ipynb_checkpoints/
+.idea/
+.venv-llama-provider/
+build/
+src/llama_stack_provider_kft.egg-info
+manifests/
+dist/
+*.ipynb
+.pre-commit-config.yaml
