@@ -13,8 +13,6 @@ spec:
     metadata:
       labels:
         app: lls-provider-kft
-      annotations:
-        sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: lls-provider-kft
       containers:
