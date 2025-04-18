@@ -1,6 +1,6 @@
 [project]
 dependencies = [
-    "llama-stack @ git+https://github.com/meta-llama/llama-stack.git@main",
+    "llama-stack>=0.2.3",
     "kubeflow-training==1.9.1",
     "kubernetes",
     "urllib3",
