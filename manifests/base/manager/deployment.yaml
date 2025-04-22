@@ -15,9 +15,11 @@ spec:
         app: lls-provider-kft
     spec:
       serviceAccountName: lls-provider-kft
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: lls-provider-kft
-          image: quay.io/efazal/kfto-remote-provider:amd64
+          image: ghcr.io/opendatahub-io/kfto-remote-provider:amd64
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8321

@@ -34,3 +34,27 @@ python3.10 train.py
 ```
 
 `train.py` utilizes the llama-stack-client python SDK to initialize training arguments, and pass the required arguments to `supervised_fine_tune` in order to kick off the provider implementation maintained externally in this repository.
+
+---
+
+## Run llama-stack-provider-kft in cluster
+
+### 1. Deploy Kustomize manifests
+Apply the kustomize manifests under base directory.
+```sh
+kubectl apply -k manifests/base/
+```
+
+### 2. Create image pull secret
+```sh
+kubectl create secret docker-registry ghcr-secret \
+  --docker-server=ghcr.io \
+  --docker-username=<YOUR_GITHUB_USERNAME> \
+  --docker-password=<YOUR_GITHUB_PAT_TOKEN>
+```
+
+### 3. (Optional) Access the service locally
+If you want to run a client such as the `train.py` script locally, you can port-forward the service to your localhost.
+```sh
+kubectl port-forward svc/lls-provider-kft 8321:80
+```
