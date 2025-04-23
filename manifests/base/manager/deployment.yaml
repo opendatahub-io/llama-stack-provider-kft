@@ -15,11 +15,9 @@ spec:
         app: lls-provider-kft
     spec:
       serviceAccountName: lls-provider-kft
-      imagePullSecrets:
-        - name: ghcr-secret
       containers:
         - name: lls-provider-kft
-          image: ghcr.io/opendatahub-io/kfto-remote-provider:amd64
+          image: quay.io/opendatahub/llama-stack-provider-kft:amd64
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8321
