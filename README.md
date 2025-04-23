@@ -45,15 +45,7 @@ Apply the kustomize manifests under base directory.
 kubectl apply -k manifests/base/
 ```
 
-### 2. Create image pull secret
-```sh
-kubectl create secret docker-registry ghcr-secret \
-  --docker-server=ghcr.io \
-  --docker-username=<YOUR_GITHUB_USERNAME> \
-  --docker-password=<YOUR_GITHUB_PAT_TOKEN>
-```
-
-### 3. (Optional) Access the service locally
+### 2. (Optional) Access the service locally
 If you want to run a client such as the `train.py` script locally, you can port-forward the service to your localhost.
 ```sh
 kubectl port-forward svc/lls-provider-kft 8321:80
