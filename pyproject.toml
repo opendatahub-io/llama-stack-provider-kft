@@ -1,29 +1,10 @@
 [project]
-dependencies = [
-    "llama-stack>=0.2.3",
-    "kubeflow-training==1.9.1",
-    "kubernetes",
-    "urllib3",
-    "six",
-    "pydantic",
-    "aiohttp",
-    "aiosqlite",
-    "datasets",
-    "fastapi",
-    "httpx",
-    "numpy",
-    "openai",
-    "opentelemetry-exporter-otlp-proto-http",
-    "opentelemetry-sdk",
-    "requests",
-    "uvicorn",
-]
-
 name = "llama-stack-provider-kft"
 version = "0.1.0"
 description = "Llama Stack Provider for Distributed InstructLab Training using KFT"
 readme = "README.md"
 requires-python = ">=3.10"
+dynamic = ["dependencies", "optional-dependencies"]
 
 [tool.ruff]
 extend-exclude = ["*.ipynb"]
@@ -31,3 +12,6 @@ extend-exclude = ["*.ipynb"]
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
