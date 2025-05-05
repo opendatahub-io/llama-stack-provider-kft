@@ -1,5 +1,7 @@
 # llama-stack-provider-kft
 
+[![PyPI version](https://img.shields.io/pypi/v/llama_stack_provider_kft.svg)](https://pypi.org/project/llama-stack-provider-kft/)
+
 Llama Stack Remote Post Training Provider for Distributed InstructLab Training using the Kubeflow Trainer
 
 ## Utilities
