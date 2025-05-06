@@ -849,11 +849,9 @@ source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
     { name = "aiosqlite" },
-    { name = "click" },
     { name = "datasets" },
     { name = "fastapi" },
     { name = "httpx" },
-    { name = "instructlab-training" },
     { name = "kubeflow-training" },
     { name = "kubernetes" },
     { name = "llama-stack" },
@@ -868,15 +866,21 @@ dependencies = [
     { name = "uvicorn" },
 ]
 
+[package.optional-dependencies]
+utils = [
+    { name = "click" },
+    { name = "instructlab-training" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "aiohttp" },
     { name = "aiosqlite" },
-    { name = "click", specifier = "==8.1.8" },
+    { name = "click", marker = "extra == 'utils'", specifier = "==8.1.8" },
     { name = "datasets" },
     { name = "fastapi" },
     { name = "httpx" },
-    { name = "instructlab-training", specifier = "==0.7.0" },
+    { name = "instructlab-training", marker = "extra == 'utils'", specifier = "==0.7.0" },
     { name = "kubeflow-training", specifier = "==1.9.1" },
     { name = "kubernetes", specifier = "==30.1.0" },
     { name = "llama-stack", specifier = ">=0.2.3" },
@@ -890,6 +894,7 @@ requires-dist = [
     { name = "urllib3" },
     { name = "uvicorn" },
 ]
+provides-extras = ["utils"]
 
 [[package]]
 name = "llvmlite"
