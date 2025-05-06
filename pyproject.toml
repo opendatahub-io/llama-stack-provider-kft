@@ -1,8 +1,13 @@
 [project]
+name = "llama-stack-provider-kft"
+version = "0.1.0"
+description = "Llama Stack Provider for Distributed InstructLab Training using KFT"
+readme = "README.md"
+requires-python = ">=3.10"
 dependencies = [
     "llama-stack>=0.2.3",
     "kubeflow-training==1.9.1",
-    "kubernetes",
+    "kubernetes==30.1.0",
     "urllib3",
     "six",
     "pydantic",
@@ -19,11 +24,12 @@ dependencies = [
     "uvicorn",
 ]
 
-name = "llama-stack-provider-kft"
-version = "0.1.0"
-description = "Llama Stack Provider for Distributed InstructLab Training using KFT"
-readme = "README.md"
-requires-python = ">=3.10"
+
+[project.optional-dependencies]
+utils = [
+    "click==8.1.8",
+    "instructlab-training==0.7.0",
+]
 
 [tool.ruff]
 extend-exclude = ["*.ipynb"]

@@ -1,6 +1,0 @@
-kubeflow-training==1.9.1
-kubernetes==30.1.0
-instructlab-training==0.7.0
-llama-stack>=0.1.8
-click==8.1.8
-llama-stack-client>=0.1.8
