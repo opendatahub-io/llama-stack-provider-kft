@@ -2,7 +2,11 @@ name: Build and Publish Image to quay.io
 
 on:
   push:
+    branches:
+      - main
   pull_request:
+    branches:
+      - main
 
 jobs:
   build-and-publish:
@@ -32,4 +36,4 @@ jobs:
           tags: |
             quay.io/opendatahub/llama-stack-provider-kft:amd64
             quay.io/opendatahub/llama-stack-provider-kft:arm64
-          push: true
+          push: ${{ github.event_name == 'push' }}
