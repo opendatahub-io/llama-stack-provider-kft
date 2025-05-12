@@ -25,9 +25,8 @@ WORKDIR /app
 # Copy pre-built wheel from builder
 COPY --from=builder /app/dist/*.whl .
 
-# Copy and install runtime dependencies and pre-built python wheel
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt *.whl
+# Install runtime dependencies and pre-built python wheel
+RUN pip install --no-cache-dir *.whl
 
 # Copy config files
 COPY run.yaml .
